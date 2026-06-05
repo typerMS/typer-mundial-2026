@@ -407,7 +407,7 @@ function sendToExcel() {
         f2 = roundTeamsHistory[4][1].name !== "Zwycięzca" ? roundTeamsHistory[4][1].name : "?";
     }
     
-    // Budujemy tekst - uwaga: używamy \n (prawdziwy znak nowej linii), by w Excelu ładnie się łamało
+    // Budujemy tekst z wynikami
     let fullResults = "🏆 MISTRZ ŚWIATA: " + cName + "\n";
     fullResults += "🔥 SKŁAD FINAŁU: " + f1 + " vs " + f2 + "\n\n";
     
@@ -457,35 +457,29 @@ function sendToExcel() {
         numMatches = numMatches / 2;
     }
 
-    // TWORZYMY NIEWIDZIALNY FORMULARZ W TLE DO WYSYŁKI
-    let form = document.createElement("form");
-    form.action = "https://docs.google.com/forms/d/e/1FAIpQLSfjjn8k4117Emnj2LqfrzH3lal4oo2vGLqOCctunxSJs9_ywg/formResponse";
-    form.method = "POST";
-    form.target = "hidden_iframe"; 
-
-    // POLE: IMIĘ
-    let inputName = document.createElement("input");
-    inputName.type = "hidden";
-    inputName.name = "entry.431356120";
-    inputName.value = playerName;
-    form.appendChild(inputName);
-
-    // POLE: PEŁNE, SZCZEGÓŁOWE WYNIKI MECZÓW
-    let inputResults = document.createElement("input");
-    inputResults.type = "hidden";
-    inputResults.name = "entry.867519413";
-    inputResults.value = fullResults;
-    form.appendChild(inputResults);
-
-    document.body.appendChild(form);
-    
     let btn = document.getElementById('send-btn');
     btn.innerText = "⏳ WYSYŁANIE...";
     btn.disabled = true;
 
-    // AKTYWUJEMY FLAGĘ I WYSYŁAMY!
-    submitted = true;
-    form.submit();
+    // --- NOWY, NOWOCZESNY MECHANIZM WYSYŁANIA (BEZ RAMEK) ---
+    const url = "https://docs.google.com/forms/d/e/1FAIpQLSfjjn8k4117Emnj2LqfrzH3lal4oo2vGLqOCctunxSJs9_ywg/formResponse";
+    
+    const formData = new FormData();
+    formData.append("entry.431356120", playerName);
+    formData.append("entry.867519413", fullResults);
+
+    fetch(url, {
+        method: "POST",
+        mode: "no-cors",
+        body: formData
+    }).then(() => {
+        // To wywoła się od razu, gdy Google poprawnie odbierze paczkę!
+        submitSuccess();
+    }).catch(err => {
+        alert("Błąd podczas wysyłania: " + err);
+        btn.innerText = "ZAKOŃCZ I WYŚLIJ ⚽";
+        btn.disabled = false;
+    });
 }
 window.onload = initApp;
 </script>
