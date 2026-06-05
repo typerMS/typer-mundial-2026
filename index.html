@@ -198,6 +198,9 @@ td { padding: 10px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); text-al
   <div class="champwrap"><div class="champ" id="champBox"><div class="tro">🏆</div><div><div class="cl">Mistrz Świata 2026</div><div class="cname" id="champName"></div></div></div></div>
   <div id="knockout-container"></div>
   
+  <!-- TUTAJ ZROBIŁEM SPECJALNE ZUPEŁNIE NOWE MIEJSCE NA MECZ O 3. MIEJSCE -->
+  <div id="third-place-playoff"></div>
+  
   <div class="submit-box">
       <h2 style="font-family: 'Anton'; margin-top: 0; font-size: 2.8rem;">ZAPISZ SWOJE TYPY!</h2>
       <p style="color: var(--muted); margin-bottom: 20px; font-size: 1.1rem;">Podaj swoje imię, aby organizator mógł zapisać Cię w tabeli typerów.</p>
@@ -244,7 +247,7 @@ let hasSuccessfullySubmitted = false;
 
 function renderTeam(teamObj, isRightSide = false) {
     if (!teamObj || !teamObj.name) return `<span style="color:var(--faint); font-style:italic;">Czeka na rywala</span>`;
-    if (teamObj.name.includes("Wybierz")) return `<span style="color:var(--gold-light); font-size:12px;">${teamObj.name}</span>`;
+    if (teamObj.name.includes("Wybierz") || teamObj.name.includes("Czeka") || teamObj.name.includes("Przegrany")) return `<span style="color:var(--gold-light); font-size:12px; font-weight:bold;">${teamObj.name}</span>`;
     let imgHTML = teamObj.flag ? `<img src="${teamObj.flag}" class="flag-img">` : '';
     return `<div class="match-team ${isRightSide ? 'right' : ''}">${imgHTML} <span>${teamObj.name}</span></div>`;
 }
@@ -337,7 +340,7 @@ function buildKnockout(top8Thirds) {
     let numMatches = 16;
     let currentTeams = K_Teams;
     roundTeamsHistory = [];
-    let thirdPlaceMatchTeams = [null, null]; // Rezerwacja miejsca dla przegranych z półfinałów
+    let thirdPlaceMatchTeams = [null, null]; // Specjalna rezerwacja dla przegranych
 
     for (let round = 0; round < 5; round++) {
         roundTeamsHistory.push(currentTeams);
@@ -356,7 +359,7 @@ function buildKnockout(top8Thirds) {
             if (r2 && r2.checked) pen = "2";
 
             let winner = {name: "Zwycięzca", flag: ""}; 
-            let loser = {name: "Przegrany", flag: ""}; 
+            let loser = {name: "Przegrany Półfinału", flag: ""}; 
             let matchClass = "bracket-match";
             let isDraw = false;
 
@@ -373,7 +376,7 @@ function buildKnockout(top8Thirds) {
             }
             nextRoundTeams.push(winner);
 
-            // Jeśli to runda nr 3 (czyli Półfinały), łapiemy przegranych do meczu o 3 miejsce!
+            // Złapanie przegranych w Półfinale:
             if (round === 3) {
                 if (i === 0) thirdPlaceMatchTeams[0] = loser;
                 if (i === 1) thirdPlaceMatchTeams[1] = loser;
@@ -384,49 +387,66 @@ function buildKnockout(top8Thirds) {
 
             html += `<div class="${matchClass}"><div class="match" style="background:transparent; border:none; padding:0; box-shadow:none;">${renderTeam(t1)}<div style="display:flex; gap:4px; align-items:center;">${p1}<input type="number" id="${id}_1" value="${g1}" min="0" oninput="updateAll()"> : <input type="number" id="${id}_2" value="${g2}" min="0" oninput="updateAll()">${p2}</div>${renderTeam(t2, true)}</div></div>`;
         }
-        
-        // Dodajemy Mecz o 3 Miejsce tuż pod Wielkim Finałem
-        if (round === 4) {
-            let tp_t1 = thirdPlaceMatchTeams[0] || {name: "Przegrany Półf. 1", flag: ""};
-            let tp_t2 = thirdPlaceMatchTeams[1] || {name: "Przegrany Półf. 2", flag: ""};
-            window.thirdPlaceTeams = [tp_t1, tp_t2]; // Przechowujemy dane na zewnątrz dla Excela
-
-            let tp_g1 = document.getElementById(`k_tp_1`) ? document.getElementById(`k_tp_1`).value : "";
-            let tp_g2 = document.getElementById(`k_tp_2`) ? document.getElementById(`k_tp_2`).value : "";
-            let tp_pen = "";
-            let tp_r1 = document.getElementById(`pen_k_tp_1`);
-            let tp_r2 = document.getElementById(`pen_k_tp_2`);
-            if (tp_r1 && tp_r1.checked) tp_pen = "1";
-            if (tp_r2 && tp_r2.checked) tp_pen = "2";
-
-            let tp_winner = null;
-            let tp_isDraw = false;
-            let tp_matchClass = "bracket-match";
-
-            if (tp_g1 !== "" && tp_g2 !== "") {
-                let s1 = parseInt(tp_g1); let s2 = parseInt(tp_g2);
-                if (s1 > s2) { tp_winner = tp_t1; tp_matchClass += " win"; }
-                else if (s2 > s1) { tp_winner = tp_t2; tp_matchClass += " win"; }
-                else {
-                    tp_isDraw = true;
-                    if (tp_pen === "1") { tp_winner = tp_t1; tp_matchClass += " win"; }
-                    else if (tp_pen === "2") { tp_winner = tp_t2; tp_matchClass += " win"; }
-                }
-            }
-            window.currentThirdPlaceWinner = tp_winner; // Zapisujemy mistrza brązu do Excela
-
-            let tp_p1 = tp_isDraw ? `<input type="radio" class="pen-radio" name="pen_k_tp" id="pen_k_tp_1" value="1" onchange="updateAll()" ${tp_pen==="1"?"checked":""} title="Wygra w karnych">` : ``;
-            let tp_p2 = tp_isDraw ? `<input type="radio" class="pen-radio" name="pen_k_tp" id="pen_k_tp_2" value="2" onchange="updateAll()" ${tp_pen==="2"?"checked":""} title="Wygra w karnych">` : ``;
-
-            html += `<div class="rhead" style="margin-top:40px; background: rgba(245, 158, 11, 0.15); color:var(--gold-light); border: 1px solid rgba(245, 158, 11, 0.3);">Mecz o 3. miejsce</div>`;
-            html += `<div class="${tp_matchClass}"><div class="match" style="background:transparent; border:none; padding:0; box-shadow:none;">${renderTeam(tp_t1)}<div style="display:flex; gap:4px; align-items:center;">${tp_p1}<input type="number" id="k_tp_1" value="${tp_g1}" min="0" oninput="updateAll()"> : <input type="number" id="k_tp_2" value="${tp_g2}" min="0" oninput="updateAll()">${tp_p2}</div>${renderTeam(tp_t2, true)}</div></div>`;
-        }
-
         html += `</div>`; currentTeams = nextRoundTeams; numMatches = numMatches / 2;
     }
     html += `</div></div>`;
+    
+    // Zapisanie wygenerowanej drabinki
     document.getElementById('knockout-container').innerHTML = html;
 
+    // --- BUDOWA CAŁKOWICIE NIEZALEŻNEGO MECZU O 3 MIEJSCE ---
+    let tp_t1 = thirdPlaceMatchTeams[0] || {name: "Przegrany Półfinału 1", flag: ""};
+    let tp_t2 = thirdPlaceMatchTeams[1] || {name: "Przegrany Półfinału 2", flag: ""};
+    window.thirdPlaceTeams = [tp_t1, tp_t2]; // do Excela
+
+    let tp_g1 = document.getElementById(`k_tp_1`) ? document.getElementById(`k_tp_1`).value : "";
+    let tp_g2 = document.getElementById(`k_tp_2`) ? document.getElementById(`k_tp_2`).value : "";
+    let tp_pen = "";
+    let tp_r1 = document.getElementById(`pen_k_tp_1`);
+    let tp_r2 = document.getElementById(`pen_k_tp_2`);
+    if (tp_r1 && tp_r1.checked) tp_pen = "1";
+    if (tp_r2 && tp_r2.checked) tp_pen = "2";
+
+    let tp_winner = null;
+    let tp_isDraw = false;
+
+    if (tp_g1 !== "" && tp_g2 !== "") {
+        let s1 = parseInt(tp_g1); let s2 = parseInt(tp_g2);
+        if (s1 > s2) { tp_winner = tp_t1; }
+        else if (s2 > s1) { tp_winner = tp_t2; }
+        else {
+            tp_isDraw = true;
+            if (tp_pen === "1") { tp_winner = tp_t1; }
+            else if (tp_pen === "2") { tp_winner = tp_t2; }
+        }
+    }
+    window.currentThirdPlaceWinner = tp_winner;
+
+    let tp_p1 = tp_isDraw ? `<input type="radio" class="pen-radio" name="pen_k_tp" id="pen_k_tp_1" value="1" onchange="updateAll()" ${tp_pen==="1"?"checked":""} title="Wygra w karnych">` : ``;
+    let tp_p2 = tp_isDraw ? `<input type="radio" class="pen-radio" name="pen_k_tp" id="pen_k_tp_2" value="2" onchange="updateAll()" ${tp_pen==="2"?"checked":""} title="Wygra w karnych">` : ``;
+
+    // Całkowicie nowy panel dla brązu poza "bscroll" i drabinką
+    let tp_html = `
+    <div class="champwrap" style="margin-top: 10px; margin-bottom: 50px;">
+        <div class="champ show" style="padding: 20px 30px; flex-direction: column; gap: 15px; border: 2px solid rgba(245, 158, 11, 0.4); background: linear-gradient(135deg, rgba(203, 213, 225, 0.05), rgba(0,0,0,0.6)); box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+            <div class="cl" style="color: #cbd5e1; font-size: 1.3rem; margin:0; text-shadow: 1px 2px 4px black; font-family: 'Anton', sans-serif; letter-spacing: 2px;">🥉 MECZ O 3. MIEJSCE</div>
+            <div class="match" style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; width: 100%; min-width: 450px; justify-content: space-between;">
+                ${renderTeam(tp_t1)}
+                <div style="display:flex; gap:8px; align-items:center;">
+                    ${tp_p1}
+                    <input type="number" id="k_tp_1" value="${tp_g1}" min="0" oninput="updateAll()" style="width: 45px; height: 45px; font-size: 1.2rem;"> 
+                    : 
+                    <input type="number" id="k_tp_2" value="${tp_g2}" min="0" oninput="updateAll()" style="width: 45px; height: 45px; font-size: 1.2rem;">
+                    ${tp_p2}
+                </div>
+                ${renderTeam(tp_t2, true)}
+            </div>
+        </div>
+    </div>`;
+
+    document.getElementById('third-place-playoff').innerHTML = tp_html;
+
+    // --- MISTRZ ŚWIATA ---
     let champion = currentTeams[0] && currentTeams[0].name !== "Zwycięzca" && !currentTeams[0].name.includes("Wybierz") ? currentTeams[0] : null;
     let champBox = document.getElementById('champBox');
     
