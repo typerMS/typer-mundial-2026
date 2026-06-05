@@ -124,7 +124,7 @@ td { padding: 10px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); text-al
 .awans .team-name { color: var(--text); }
 .odpada td { color: var(--faint); }
 
-.bscroll { overflow-x: auto; overflow-y: hidden; padding: 10px 0 30px; -webkit-overflow-scrolling: touch; }
+.bscroll { overflow-x: auto; padding: 10px 0 60px; -webkit-overflow-scrolling: touch; }
 .bscroll::-webkit-scrollbar { height: 12px; }
 .bscroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.25); border-radius: 6px; }
 .bracket { display: flex; gap: 20px; min-width: 1200px; align-items: stretch; }
@@ -133,13 +133,48 @@ td { padding: 10px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); text-al
 .bracket-match::before { width: 5px; background: rgba(255,255,255,0.1); border-radius: 12px 0 0 12px;}
 .bracket-match.win::before { background: var(--grass); }
 
-.champwrap { margin: 20px 0 40px; }
-.champ { display: none; align-items: center; justify-content: center; gap: 25px; padding: 35px; border-radius: 16px; background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(0,0,0,0.5)); border: 2px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 40px rgba(245,158,11,0.1); }
-.champ.show { display: flex; animation: pop .5s ease-out; }
-@keyframes pop { from{ transform:scale(0.9); opacity:0; } to{ transform:scale(1); opacity:1; } }
-.champ .tro { font-size: 5.5rem; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.6)); }
-.champ .cl { font-size: 1.1rem; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-light); font-weight: 800; margin-bottom: 5px; text-shadow: 1px 1px 2px black;}
-.champ .cname { font-family: 'Anton', sans-serif; font-size: clamp(2.8rem, 6vw, 4.5rem); line-height: 1; display: flex; align-items: center; gap: 15px; text-transform: uppercase; text-shadow: 2px 4px 10px rgba(0,0,0,0.7);}
+/* --- NOWY PANEL TOP 4 --- */
+#top-4-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 30px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(0,0,0,0.6));
+    border: 2px solid var(--gold);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 40px rgba(245,158,11,0.1);
+    margin: 20px 0 40px;
+}
+.podium-place {
+    text-align: center;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 15px 25px;
+    min-width: 220px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+.podium-place h3 {
+    margin: 0 0 10px 0;
+    color: var(--gold-light);
+    font-family: 'Anton', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 1px 2px 4px black;
+}
+.podium-team {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: 'Anton', sans-serif;
+    font-size: 1.6rem;
+    text-transform: uppercase;
+    color: var(--text);
+    text-shadow: 1px 2px 5px rgba(0,0,0,0.8);
+}
 
 .btn-submit {
     display: block; width: 100%;
@@ -195,11 +230,17 @@ td { padding: 10px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); text-al
 
 <section id="s3">
   <div class="shead"><span class="snum">03</span><h2 class="stitle">Drabinka Pucharowa</h2></div>
-  <div class="champwrap"><div class="champ" id="champBox"><div class="tro">🏆</div><div><div class="cl">Mistrz Świata 2026</div><div class="cname" id="champName"></div></div></div></div>
-  <div id="knockout-container"></div>
   
-  <!-- TUTAJ ZROBIŁEM SPECJALNE ZUPEŁNIE NOWE MIEJSCE NA MECZ O 3. MIEJSCE -->
-  <div id="third-place-playoff"></div>
+  <!-- NOWY, PODŁUŻNY PANEL TOP 4 -->
+  <div id="top-4-panel">
+      <div class="podium-place"><h3>🥇 1. Miejsce</h3><div id="pos1" class="podium-team">---</div></div>
+      <div class="podium-place"><h3>🥈 2. Miejsce</h3><div id="pos2" class="podium-team">---</div></div>
+      <div class="podium-place"><h3>🥉 3. Miejsce</h3><div id="pos3" class="podium-team">---</div></div>
+      <div class="podium-place"><h3>🏅 4. Miejsce</h3><div id="pos4" class="podium-team">---</div></div>
+  </div>
+
+  <!-- KONTENER NA DRABINKĘ -->
+  <div id="knockout-container"></div>
   
   <div class="submit-box">
       <h2 style="font-family: 'Anton'; margin-top: 0; font-size: 2.8rem;">ZAPISZ SWOJE TYPY!</h2>
@@ -250,6 +291,14 @@ function renderTeam(teamObj, isRightSide = false) {
     if (teamObj.name.includes("Wybierz") || teamObj.name.includes("Czeka") || teamObj.name.includes("Przegrany")) return `<span style="color:var(--gold-light); font-size:12px; font-weight:bold;">${teamObj.name}</span>`;
     let imgHTML = teamObj.flag ? `<img src="${teamObj.flag}" class="flag-img">` : '';
     return `<div class="match-team ${isRightSide ? 'right' : ''}">${imgHTML} <span>${teamObj.name}</span></div>`;
+}
+
+function renderPodiumTeam(team) {
+    if (!team || !team.name || team.name.includes("Wybierz") || team.name.includes("Czeka") || team.name.includes("Przegrany")) {
+        return `<span style="color:var(--faint); font-size:14px;">---</span>`;
+    }
+    let imgHTML = team.flag ? `<img src="${team.flag}" style="width:28px; border-radius:4px; vertical-align:middle; margin-right:8px; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">` : '';
+    return `<span>${imgHTML}${team.name}</span>`;
 }
 
 function initApp() {
@@ -340,7 +389,9 @@ function buildKnockout(top8Thirds) {
     let numMatches = 16;
     let currentTeams = K_Teams;
     roundTeamsHistory = [];
-    let thirdPlaceMatchTeams = [null, null]; // Specjalna rezerwacja dla przegranych
+    
+    let thirdPlaceMatchTeams = [null, null];
+    let podium = { gold: null, silver: null, bronze: null, fourth: null };
 
     for (let round = 0; round < 5; round++) {
         roundTeamsHistory.push(currentTeams);
@@ -376,10 +427,16 @@ function buildKnockout(top8Thirds) {
             }
             nextRoundTeams.push(winner);
 
-            // Złapanie przegranych w Półfinale:
+            // Łapanie przegranych w Półfinale do meczu o 3. miejsce
             if (round === 3) {
                 if (i === 0) thirdPlaceMatchTeams[0] = loser;
                 if (i === 1) thirdPlaceMatchTeams[1] = loser;
+            }
+
+            // Rozstrzygnięcie Finału
+            if (round === 4) {
+                podium.gold = winner;
+                podium.silver = loser;
             }
 
             let p1 = isDraw ? `<input type="radio" class="pen-radio" name="pen_${id}" id="pen_${id}_1" value="1" onchange="updateAll()" ${pen==="1"?"checked":""} title="Wygra w karnych">` : ``;
@@ -387,6 +444,46 @@ function buildKnockout(top8Thirds) {
 
             html += `<div class="${matchClass}"><div class="match" style="background:transparent; border:none; padding:0; box-shadow:none;">${renderTeam(t1)}<div style="display:flex; gap:4px; align-items:center;">${p1}<input type="number" id="${id}_1" value="${g1}" min="0" oninput="updateAll()"> : <input type="number" id="${id}_2" value="${g2}" min="0" oninput="updateAll()">${p2}</div>${renderTeam(t2, true)}</div></div>`;
         }
+
+        // --- BUDOWA MECZU O 3. MIEJSCE BEZPOŚREDNIO POD FINAŁEM ---
+        if (round === 4) {
+            let tp_t1 = thirdPlaceMatchTeams[0] || {name: "Przegrany Półf. 1", flag: ""};
+            let tp_t2 = thirdPlaceMatchTeams[1] || {name: "Przegrany Półf. 2", flag: ""};
+
+            let tp_g1 = document.getElementById(`k_tp_1`) ? document.getElementById(`k_tp_1`).value : "";
+            let tp_g2 = document.getElementById(`k_tp_2`) ? document.getElementById(`k_tp_2`).value : "";
+            let tp_pen = "";
+            let tp_r1 = document.getElementById(`pen_k_tp_1`);
+            let tp_r2 = document.getElementById(`pen_k_tp_2`);
+            if (tp_r1 && tp_r1.checked) tp_pen = "1";
+            if (tp_r2 && tp_r2.checked) tp_pen = "2";
+
+            let tp_isDraw = false;
+            let tp_matchClass = "bracket-match";
+
+            if (tp_g1 !== "" && tp_g2 !== "") {
+                let s1 = parseInt(tp_g1); let s2 = parseInt(tp_g2);
+                if (s1 > s2) { podium.bronze = tp_t1; podium.fourth = tp_t2; tp_matchClass += " win"; }
+                else if (s2 > s1) { podium.bronze = tp_t2; podium.fourth = tp_t1; tp_matchClass += " win"; }
+                else {
+                    tp_isDraw = true;
+                    if (tp_pen === "1") { podium.bronze = tp_t1; podium.fourth = tp_t2; tp_matchClass += " win"; }
+                    else if (tp_pen === "2") { podium.bronze = tp_t2; podium.fourth = tp_t1; tp_matchClass += " win"; }
+                }
+            }
+
+            // Zapis do obiektu okna dla funkcji Excela
+            window.thirdPlaceMatchData = { t1: tp_t1.name, t2: tp_t2.name, g1: tp_g1, g2: tp_g2 };
+
+            let tp_p1 = tp_isDraw ? `<input type="radio" class="pen-radio" name="pen_k_tp" id="pen_k_tp_1" value="1" onchange="updateAll()" ${tp_pen==="1"?"checked":""} title="Wygra w karnych">` : ``;
+            let tp_p2 = tp_isDraw ? `<input type="radio" class="pen-radio" name="pen_k_tp" id="pen_k_tp_2" value="2" onchange="updateAll()" ${tp_pen==="2"?"checked":""} title="Wygra w karnych">` : ``;
+
+            html += `<div style="margin-top: 40px;">`;
+            html += `<div class="rhead" style="background: rgba(245, 158, 11, 0.15); color:var(--gold-light); border: 1px solid rgba(245, 158, 11, 0.3);">Mecz o 3. miejsce</div>`;
+            html += `<div class="${tp_matchClass}"><div class="match" style="background:transparent; border:none; padding:0; box-shadow:none;">${renderTeam(tp_t1)}<div style="display:flex; gap:4px; align-items:center;">${tp_p1}<input type="number" id="k_tp_1" value="${tp_g1}" min="0" oninput="updateAll()"> : <input type="number" id="k_tp_2" value="${tp_g2}" min="0" oninput="updateAll()">${tp_p2}</div>${renderTeam(tp_t2, true)}</div></div>`;
+            html += `</div>`;
+        }
+
         html += `</div>`; currentTeams = nextRoundTeams; numMatches = numMatches / 2;
     }
     html += `</div></div>`;
@@ -394,67 +491,11 @@ function buildKnockout(top8Thirds) {
     // Zapisanie wygenerowanej drabinki
     document.getElementById('knockout-container').innerHTML = html;
 
-    // --- BUDOWA CAŁKOWICIE NIEZALEŻNEGO MECZU O 3 MIEJSCE ---
-    let tp_t1 = thirdPlaceMatchTeams[0] || {name: "Przegrany Półfinału 1", flag: ""};
-    let tp_t2 = thirdPlaceMatchTeams[1] || {name: "Przegrany Półfinału 2", flag: ""};
-    window.thirdPlaceTeams = [tp_t1, tp_t2]; // do Excela
-
-    let tp_g1 = document.getElementById(`k_tp_1`) ? document.getElementById(`k_tp_1`).value : "";
-    let tp_g2 = document.getElementById(`k_tp_2`) ? document.getElementById(`k_tp_2`).value : "";
-    let tp_pen = "";
-    let tp_r1 = document.getElementById(`pen_k_tp_1`);
-    let tp_r2 = document.getElementById(`pen_k_tp_2`);
-    if (tp_r1 && tp_r1.checked) tp_pen = "1";
-    if (tp_r2 && tp_r2.checked) tp_pen = "2";
-
-    let tp_winner = null;
-    let tp_isDraw = false;
-
-    if (tp_g1 !== "" && tp_g2 !== "") {
-        let s1 = parseInt(tp_g1); let s2 = parseInt(tp_g2);
-        if (s1 > s2) { tp_winner = tp_t1; }
-        else if (s2 > s1) { tp_winner = tp_t2; }
-        else {
-            tp_isDraw = true;
-            if (tp_pen === "1") { tp_winner = tp_t1; }
-            else if (tp_pen === "2") { tp_winner = tp_t2; }
-        }
-    }
-    window.currentThirdPlaceWinner = tp_winner;
-
-    let tp_p1 = tp_isDraw ? `<input type="radio" class="pen-radio" name="pen_k_tp" id="pen_k_tp_1" value="1" onchange="updateAll()" ${tp_pen==="1"?"checked":""} title="Wygra w karnych">` : ``;
-    let tp_p2 = tp_isDraw ? `<input type="radio" class="pen-radio" name="pen_k_tp" id="pen_k_tp_2" value="2" onchange="updateAll()" ${tp_pen==="2"?"checked":""} title="Wygra w karnych">` : ``;
-
-    // Całkowicie nowy panel dla brązu poza "bscroll" i drabinką
-    let tp_html = `
-    <div class="champwrap" style="margin-top: 10px; margin-bottom: 50px;">
-        <div class="champ show" style="padding: 20px 30px; flex-direction: column; gap: 15px; border: 2px solid rgba(245, 158, 11, 0.4); background: linear-gradient(135deg, rgba(203, 213, 225, 0.05), rgba(0,0,0,0.6)); box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
-            <div class="cl" style="color: #cbd5e1; font-size: 1.3rem; margin:0; text-shadow: 1px 2px 4px black; font-family: 'Anton', sans-serif; letter-spacing: 2px;">🥉 MECZ O 3. MIEJSCE</div>
-            <div class="match" style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; width: 100%; min-width: 450px; justify-content: space-between;">
-                ${renderTeam(tp_t1)}
-                <div style="display:flex; gap:8px; align-items:center;">
-                    ${tp_p1}
-                    <input type="number" id="k_tp_1" value="${tp_g1}" min="0" oninput="updateAll()" style="width: 45px; height: 45px; font-size: 1.2rem;"> 
-                    : 
-                    <input type="number" id="k_tp_2" value="${tp_g2}" min="0" oninput="updateAll()" style="width: 45px; height: 45px; font-size: 1.2rem;">
-                    ${tp_p2}
-                </div>
-                ${renderTeam(tp_t2, true)}
-            </div>
-        </div>
-    </div>`;
-
-    document.getElementById('third-place-playoff').innerHTML = tp_html;
-
-    // --- MISTRZ ŚWIATA ---
-    let champion = currentTeams[0] && currentTeams[0].name !== "Zwycięzca" && !currentTeams[0].name.includes("Wybierz") ? currentTeams[0] : null;
-    let champBox = document.getElementById('champBox');
-    
-    if (champion) {
-        champBox.classList.add('show');
-        let champImg = champion.flag ? `<img src="${champion.flag}" style="height:1.2em; border-radius:4px; box-shadow:0 2px 5px rgba(0,0,0,0.5);">` : '';
-        document.getElementById('champName').innerHTML = `${champImg} ${champion.name}`;
-    } else { champBox.classList.remove('show'); document.getElementById('champName').innerHTML = ""; }
+    // --- AKTUALIZACJA NOWEGO PANELA TOP 4 ---
+    document.getElementById('pos1').innerHTML = renderPodiumTeam(podium.gold);
+    document.getElementById('pos2').innerHTML = renderPodiumTeam(podium.silver);
+    document.getElementById('pos3').innerHTML = renderPodiumTeam(podium.bronze);
+    document.getElementById('pos4').innerHTML = renderPodiumTeam(podium.fourth);
 }
 
 function submitSuccess() {
@@ -475,18 +516,16 @@ function sendToExcel() {
         return;
     }
 
-    let cName = document.getElementById('champName').innerText.trim() || 'Nie wybrano';
-    let tName = window.currentThirdPlaceWinner ? window.currentThirdPlaceWinner.name : "Nie wybrano";
-    let f1 = "?"; let f2 = "?";
-    if (roundTeamsHistory[4] && roundTeamsHistory[4][0] && roundTeamsHistory[4][1]) {
-        f1 = roundTeamsHistory[4][0].name !== "Zwycięzca" ? roundTeamsHistory[4][0].name : "?";
-        f2 = roundTeamsHistory[4][1].name !== "Zwycięzca" ? roundTeamsHistory[4][1].name : "?";
-    }
+    let p1 = document.getElementById('pos1').innerText.replace('---', '?').trim();
+    let p2 = document.getElementById('pos2').innerText.replace('---', '?').trim();
+    let p3 = document.getElementById('pos3').innerText.replace('---', '?').trim();
+    let p4 = document.getElementById('pos4').innerText.replace('---', '?').trim();
     
-    // Budujemy tekst z wynikami - DOCHODZI BRĄZOWY MEDALISTA
-    let fullResults = "🏆 MISTRZ ŚWIATA: " + cName + "\n";
-    fullResults += "🥉 3. MIEJSCE: " + tName + "\n";
-    fullResults += "🔥 SKŁAD FINAŁU: " + f1 + " vs " + f2 + "\n\n";
+    // Budujemy tekst z wynikami
+    let fullResults = "🏆 1. MIEJSCE: " + p1 + "\n";
+    fullResults += "🥈 2. MIEJSCE: " + p2 + "\n";
+    fullResults += "🥉 3. MIEJSCE: " + p3 + "\n";
+    fullResults += "🏅 4. MIEJSCE: " + p4 + "\n\n";
     
     // --- POBIERANIE DOKŁADNYCH WYNIKÓW Z GRUP ---
     fullResults += "⚽ WYNIKI GRUPOWE:\n";
@@ -534,13 +573,10 @@ function sendToExcel() {
         numMatches = numMatches / 2;
     }
 
-    // Dodajemy do Excela konkretny zapis meczu o brąz
-    let tp_el1 = document.getElementById('k_tp_1');
-    let tp_el2 = document.getElementById('k_tp_2');
-    if (tp_el1 && tp_el2 && tp_el1.value !== "" && tp_el2.value !== "") {
-        let n1 = window.thirdPlaceTeams && window.thirdPlaceTeams[0] && window.thirdPlaceTeams[0].name ? window.thirdPlaceTeams[0].name : "?";
-        let n2 = window.thirdPlaceTeams && window.thirdPlaceTeams[1] && window.thirdPlaceTeams[1].name ? window.thirdPlaceTeams[1].name : "?";
-        fullResults += "-- Mecz o 3. miejsce --\n" + n1 + " " + tp_el1.value + ":" + tp_el2.value + " " + n2 + "\n";
+    // Zapisywanie meczu o 3. miejsce do Arkusza
+    if (window.thirdPlaceMatchData && window.thirdPlaceMatchData.g1 !== "") {
+        fullResults += "-- Mecz o 3. miejsce --\n";
+        fullResults += window.thirdPlaceMatchData.t1 + " " + window.thirdPlaceMatchData.g1 + ":" + window.thirdPlaceMatchData.g2 + " " + window.thirdPlaceMatchData.t2 + "\n";
     }
 
     let btn = document.getElementById('send-btn');
