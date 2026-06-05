@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Typer MŚ 2026 — Edycja Piłkarska</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:ital,wght@0,400;0,600;0,800;1,500&display=swap" rel="stylesheet">
+<style>
+/* --- KLASYCZNE KOLORY MUNDIALOWE --- */
+:root {
+  --ink: #050a15; 
+  --text: #ffffff; 
+  --muted: #cbd5e1; 
+  --faint: #64748b;
+  
+  --grass: #22c55e; 
+  --grass-dark: #166534;
+  --gold: #f59e0b;  
+  --gold-light: #fcd34d;
+  --red: #ef4444; 
+  --blue: #3b82f6;
+  
+  --grad: linear-gradient(120deg, #f59e0b, #fde047); 
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  background-color: var(--ink);
+  background-image: 
+    linear-gradient(to bottom, rgba(5, 10, 21, 0.6) 0%, rgba(5, 10, 21, 0.95) 100%),
+    url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?q=80&w=2560&auto=format&fit=crop');
+  
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-size: 15px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+#login-screen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(5, 10, 21, 0.9); backdrop-filter: blur(10px); z-index: 9999;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+}
+.login-box {
+    background: rgba(15, 23, 42, 0.9); padding: 50px; border-radius: 12px;
+    border: 2px solid var(--gold); text-align: center; text-transform: uppercase;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(245, 158, 11, 0.3);
+}
+.login-box h2 { font-family: 'Anton'; color: var(--text); font-size: 3.5rem; margin: 0 0 5px 0; letter-spacing: 2px; }
+.login-box h2 span { color: var(--gold); }
+.login-box input {
+    padding: 15px; font-size: 24px; text-align: center; margin: 25px 0; width: 100%; letter-spacing: 4px;
+    background: rgba(0,0,0,0.5); color: var(--gold-light); border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; outline: none; font-weight: bold;
+}
+.login-box input:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(245, 158, 11, 0.4); }
+.login-box button {
+    background: var(--grad); color: #000; font-weight: 900; font-size: 20px; width: 100%;
+    padding: 15px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; transition: 0.2s;
+}
+.login-box button:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(245, 158, 11, 0.6); }
+
+.wrap { max-width: 1280px; margin: 0 auto; padding: 26px 20px 80px; display: none; }
+
+header.top { position: relative; padding: 34px 0 22px; border-bottom: 2px solid rgba(255,255,255,0.1); margin-bottom: 30px; text-align: center; }
+.kick { font-size: 1.1rem; letter-spacing: .4em; text-transform: uppercase; color: var(--grass); font-weight: 800; margin-bottom: 10px; text-shadow: 1px 1px 2px black; }
+h1 { font-family: 'Anton', sans-serif; font-weight: 400; line-height: .92; margin: 0; font-size: clamp(3rem, 8vw, 6rem); letter-spacing: .02em; text-transform: uppercase; text-shadow: 2px 4px 8px rgba(0,0,0,0.8); }
+h1 .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.sub { margin: 15px auto 0; color: var(--muted); max-width: 700px; font-size: 1.15rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); }
+
+section { margin-top: 50px; }
+.shead { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; padding-bottom: 10px;}
+.snum { font-family: 'Anton', sans-serif; font-size: 2.2rem; color: var(--gold); line-height: 1; text-shadow: 1px 2px 4px black; }
+.stitle { font-family: 'Anton', sans-serif; text-transform: uppercase; font-size: clamp(1.6rem, 3.5vw, 2.2rem); margin: 0; letter-spacing: .04em; text-shadow: 2px 2px 6px rgba(0,0,0,0.8); }
+
+.gcard, #third-place-container, .bracket-match, .submit-box { 
+    background: rgba(15, 23, 42, 0.85); 
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    border-radius: 12px; padding: 16px; position: relative; overflow: hidden; 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+}
+.gcard::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 6px; background: var(--grad); }
+.gname { font-family: 'Anton', sans-serif; letter-spacing: .06em; font-size: 1.6rem; margin-bottom: 15px; color: var(--text); }
+.gname span { color: var(--gold-light); }
+
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 15px; }
+th { color: var(--muted); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; padding-bottom: 10px; border-bottom: 2px solid rgba(255,255,255,0.1); text-align: center; }
+td { padding: 10px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: 600; }
+.team-name { text-align: left; display: flex; align-items: center; gap: 10px; }
+.col-points { color: var(--gold); font-size: 17px; font-weight: 800;}
+.flag-img { width: 26px; height: 18px; border-radius: 3px; object-fit: cover; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+
+.match { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px; }
+.match-team { display: flex; align-items: center; gap: 8px; width: 35%; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.match-team.right { flex-direction: row-reverse; text-align: right; }
+.match input[type="number"] { 
+    background: rgba(255,255,255,0.9); border: 1px solid #ccc; color: #000; 
+    width: 38px; height: 38px; text-align: center; font-weight: 900; font-family: inherit; border-radius: 6px; outline: none; transition: 0.2s; 
+}
+.match input[type="number"]:focus { background: #fff; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.4); transform: scale(1.05); }
+
+.pen-radio {
+    appearance: none; -webkit-appearance: none;
+    width: 18px; height: 18px; border: 2px solid var(--faint); border-radius: 50%;
+    outline: none; cursor: pointer; margin: 0 4px; transition: 0.2s; background: rgba(0,0,0,0.5);
+    position: relative;
+}
+.pen-radio::after {
+    content: "K"; position: absolute; font-size: 10px; color: transparent; 
+    top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold;
+}
+.pen-radio:checked { border-color: var(--grass); background: var(--grass); box-shadow: 0 0 8px var(--grass); }
+.pen-radio:checked::after { color: white; }
+
+.awans td { background: rgba(34, 197, 94, 0.15); color: var(--grass); }
+.awans .team-name { color: var(--text); }
+.odpada td { color: var(--faint); }
+
+.bscroll { overflow-x: auto; overflow-y: hidden; padding: 10px 0 30px; -webkit-overflow-scrolling: touch; }
+.bscroll::-webkit-scrollbar { height: 12px; }
+.bscroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.25); border-radius: 6px; }
+.bracket { display: flex; gap: 20px; min-width: 1200px; align-items: stretch; }
+.round { display: flex; flex-direction: column; justify-content: space-around; min-width: 280px; flex: 1; }
+.rhead { font-size: .85rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); font-weight: 800; text-align: center; margin-bottom: 15px; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 6px;}
+.bracket-match::before { width: 5px; background: rgba(255,255,255,0.1); border-radius: 12px 0 0 12px;}
+.bracket-match.win::before { background: var(--grass); }
+
+.champwrap { margin: 20px 0 40px; }
+.champ { display: none; align-items: center; justify-content: center; gap: 25px; padding: 35px; border-radius: 16px; background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(0,0,0,0.5)); border: 2px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 40px rgba(245,158,11,0.1); }
+.champ.show { display: flex; animation: pop .5s ease-out; }
+@keyframes pop { from{ transform:scale(0.9); opacity:0; } to{ transform:scale(1); opacity:1; } }
+.champ .tro { font-size: 5.5rem; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.6)); }
+.champ .cl { font-size: 1.1rem; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-light); font-weight: 800; margin-bottom: 5px; text-shadow: 1px 1px 2px black;}
+.champ .cname { font-family: 'Anton', sans-serif; font-size: clamp(2.8rem, 6vw, 4.5rem); line-height: 1; display: flex; align-items: center; gap: 15px; text-transform: uppercase; text-shadow: 2px 4px 10px rgba(0,0,0,0.7);}
+
+.btn-submit {
+    display: block; width: 100%;
+    background: var(--grad); color: #000; border: none; border-radius: 8px;
+    padding: 22px; font-size: 1.8rem; font-family: 'Anton', sans-serif; letter-spacing: 2px;
+    text-transform: uppercase; cursor: pointer; transition: 0.3s;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5); margin-top: 20px;
+}
+.btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(0,0,0,0.7), 0 0 20px rgba(245,158,11,0.5); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.submit-box { border-top: 4px solid var(--gold); }
+.submit-box h2 { text-shadow: 1px 2px 4px rgba(0,0,0,0.8); color: var(--gold-light);}
+.submit-box input[type="text"] {
+    padding: 18px; font-size: 22px; text-align: center; width: 100%; letter-spacing: 2px;
+    background: rgba(0,0,0,0.4); color: var(--text); border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; outline: none; font-weight: bold;
+}
+.submit-box input[type="text"]:focus { border-color: var(--gold); background: rgba(0,0,0,0.7); }
+
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+    <div class="login-box">
+        <h2>TYPER MŚ <span>2026</span></h2>
+        <p style="color: var(--muted); letter-spacing: 1px; font-size: 1.1rem;">Wpisz kod dostępu dla uczestników:</p>
+        <input type="password" id="pass-input" placeholder="****">
+        <button onclick="checkPass()">WEJDŹ NA STADION</button>
+        <p id="pass-error" style="color: var(--red); display: none; margin-top: 15px; font-weight: bold;">Błędne hasło! Spróbuj ponownie.</p>
+    </div>
+</div>
+
+<div class="wrap" id="main-app">
+
+<header class="top">
+  <div class="kick">Kanada · Meksyk · USA</div>
+  <h1>Oficjalny Typer <span class="grad">2026</span></h1>
+  <p class="sub">Wypełnij wyniki fazy grupowej, przejdź przez drabinkę pucharową i wyłoń Mistrza Świata. Na dole zapisz swoje typy w bazie organizatora!</p>
+</header>
+
+<section id="s1"><div class="shead"><span class="snum">01</span><h2 class="stitle">Faza grupowa</h2></div><div class="groups" id="groups-container"></div></section>
+
+<section id="s2">
+  <div class="shead"><span class="snum">02</span><h2 class="stitle">Ranking 3. miejsc</h2></div>
+  <div id="third-place-container">
+    <table>
+        <thead><tr><th>Grupa</th><th class="team-name">Drużyna</th><th>Punkty</th><th>Bramki (RB)</th><th>Zwycięstwa</th><th>Status</th></tr></thead>
+        <tbody id="third-place-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="shead"><span class="snum">03</span><h2 class="stitle">Drabinka Pucharowa</h2></div>
+  <div class="champwrap"><div class="champ" id="champBox"><div class="tro">🏆</div><div><div class="cl">Mistrz Świata 2026</div><div class="cname" id="champName"></div></div></div></div>
+  <div id="knockout-container"></div>
+  
+  <div class="submit-box">
+      <h2 style="font-family: 'Anton'; margin-top: 0; font-size: 2.8rem;">ZAPISZ SWOJE TYPY!</h2>
+      <p style="color: var(--muted); margin-bottom: 20px; font-size: 1.1rem;">Podaj swoje imię, aby organizator mógł zapisać Cię w tabeli typerów.</p>
+      <input type="text" id="player-name" placeholder="Twoje Imię / Nick">
+      <button class="btn-submit" id="send-btn" onclick="sendToExcel()">ZAKOŃCZ I WYŚLIJ ⚽</button>
+  </div>
+</section>
+
+<!-- NIEWIDZIALNA RAMKA DO OMIJANIA BLOKAD PRZEGLĄDARKI -->
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted){submitSuccess();}"></iframe>
+
+</div>
+
+<script>
+function checkPass() {
+    let input = document.getElementById('pass-input').value;
+    if (input === '2026') {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+    } else {
+        document.getElementById('pass-error').style.display = 'block';
+    }
+}
+
+document.getElementById("pass-input").addEventListener("keypress", function(event) {
+  if (event.key === "Enter") { event.preventDefault(); checkPass(); }
+});
+
+const DRUZYNY = {
+    'A': [{ name: 'Meksyk', flag: 'https://flagcdn.com/w40/mx.png' }, { name: 'RPA', flag: 'https://flagcdn.com/w40/za.png' }, { name: 'Korea Poł.', flag: 'https://flagcdn.com/w40/kr.png' }, { name: 'Czechy', flag: 'https://flagcdn.com/w40/cz.png' }],
+    'B': [{ name: 'Kanada', flag: 'https://flagcdn.com/w40/ca.png' }, { name: 'Bośnia i Herc.', flag: 'https://flagcdn.com/w40/ba.png' }, { name: 'Katar', flag: 'https://flagcdn.com/w40/qa.png' }, { name: 'Szwajcaria', flag: 'https://flagcdn.com/w40/ch.png' }],
+    'C': [{ name: 'Brazylia', flag: 'https://flagcdn.com/w40/br.png' }, { name: 'Maroko', flag: 'https://flagcdn.com/w40/ma.png' }, { name: 'Haiti', flag: 'https://flagcdn.com/w40/ht.png' }, { name: 'Szkocja', flag: 'https://flagcdn.com/w40/gb-sct.png' }],
+    'D': [{ name: 'USA', flag: 'https://flagcdn.com/w40/us.png' }, { name: 'Kolumbia', flag: 'https://flagcdn.com/w40/co.png' }, { name: 'Serbia', flag: 'https://flagcdn.com/w40/rs.png' }, { name: 'ZEA', flag: 'https://flagcdn.com/w40/ae.png' }],
+    'E': [{ name: 'Argentyna', flag: 'https://flagcdn.com/w40/ar.png' }, { name: 'Dania', flag: 'https://flagcdn.com/w40/dk.png' }, { name: 'Mali', flag: 'https://flagcdn.com/w40/ml.png' }, { name: 'Oman', flag: 'https://flagcdn.com/w40/om.png' }],
+    'F': [{ name: 'Anglia', flag: 'https://flagcdn.com/w40/gb-eng.png' }, { name: 'Chorwacja', flag: 'https://flagcdn.com/w40/hr.png' }, { name: 'Ekwador', flag: 'https://flagcdn.com/w40/ec.png' }, { name: 'Australia', flag: 'https://flagcdn.com/w40/au.png' }],
+    'G': [{ name: 'Francja', flag: 'https://flagcdn.com/w40/fr.png' }, { name: 'Urugwaj', flag: 'https://flagcdn.com/w40/uy.png' }, { name: 'Algieria', flag: 'https://flagcdn.com/w40/dz.png' }, { name: 'Nowa Zelandia', flag: 'https://flagcdn.com/w40/nz.png' }],
+    'H': [{ name: 'Hiszpania', flag: 'https://flagcdn.com/w40/es.png' }, { name: 'Ukraina', flag: 'https://flagcdn.com/w40/ua.png' }, { name: 'Kostaryka', flag: 'https://flagcdn.com/w40/cr.png' }, { name: 'Kamerun', flag: 'https://flagcdn.com/w40/cm.png' }],
+    'I': [{ name: 'Portugalia', flag: 'https://flagcdn.com/w40/pt.png' }, { name: 'Japonia', flag: 'https://flagcdn.com/w40/jp.png' }, { name: 'Egipt', flag: 'https://flagcdn.com/w40/eg.png' }, { name: 'Paragwaj', flag: 'https://flagcdn.com/w40/py.png' }],
+    'J': [{ name: 'Niemcy', flag: 'https://flagcdn.com/w40/de.png' }, { name: 'Szwecja', flag: 'https://flagcdn.com/w40/se.png' }, { name: 'WKS', flag: 'https://flagcdn.com/w40/ci.png' }, { name: 'Panama', flag: 'https://flagcdn.com/w40/pa.png' }],
+    'K': [{ name: 'Włochy', flag: 'https://flagcdn.com/w40/it.png' }, { name: 'Belgia', flag: 'https://flagcdn.com/w40/be.png' }, { name: 'Senegal', flag: 'https://flagcdn.com/w40/sn.png' }, { name: 'Iran', flag: 'https://flagcdn.com/w40/ir.png' }],
+    'L': [{ name: 'Holandia', flag: 'https://flagcdn.com/w40/nl.png' }, { name: 'Austria', flag: 'https://flagcdn.com/w40/at.png' }, { name: 'Arabia Saud.', flag: 'https://flagcdn.com/w40/sa.png' }, { name: 'Peru', flag: 'https://flagcdn.com/w40/pe.png' }]
+};
+
+let groupResults = {};
+let roundTeamsHistory = [];
+let submitted = false; // Flaga chroniąca formularz
+
+function renderTeam(teamObj, isRightSide = false) {
+    if (!teamObj || !teamObj.name) return `<span style="color:var(--faint); font-style:italic;">Czeka na rywala</span>`;
+    if (teamObj.name.includes("Wybierz")) return `<span style="color:var(--gold-light); font-size:12px;">${teamObj.name}</span>`;
+    let imgHTML = teamObj.flag ? `<img src="${teamObj.flag}" class="flag-img">` : '';
+    return `<div class="match-team ${isRightSide ? 'right' : ''}">${imgHTML} <span>${teamObj.name}</span></div>`;
+}
+
+function initApp() {
+    const container = document.getElementById('groups-container');
+    for (let letter in DRUZYNY) {
+        let teams = DRUZYNY[letter];
+        let groupHTML = `
+        <div class="gcard"><div class="gname">Grupa <span>${letter}</span></div>
+            <table><thead><tr><th style="width:20px"></th><th class="team-name">Drużyna</th><th>BZ</th><th>BS</th><th>RB</th><th>Pkt</th></tr></thead><tbody id="table-${letter}"></tbody></table>
+            <div class="matches">
+                ${createMatchHTML(letter, 0, 1, teams[0], teams[1])} ${createMatchHTML(letter, 2, 3, teams[2], teams[3])}
+                ${createMatchHTML(letter, 0, 2, teams[0], teams[2])} ${createMatchHTML(letter, 1, 3, teams[1], teams[3])}
+                ${createMatchHTML(letter, 0, 3, teams[0], teams[3])} ${createMatchHTML(letter, 1, 2, teams[1], teams[2])}
+            </div></div>`;
+        container.innerHTML += groupHTML;
+        groupResults[letter] = teams.map(t => ({ name: t.name, flag: t.flag, W:0, BZ:0, BS:0, RB:0, Pkt:0 }));
+    }
+    updateAll();
+}
+
+function createMatchHTML(group, i1, i2, t1, t2) {
+    let id = `m_${group}_${i1}_${i2}`;
+    return `<div class="match">${renderTeam(t1)}<div style="display:flex; gap:6px; align-items:center;"><input type="number" id="${id}_1" min="0" oninput="updateAll()"> : <input type="number" id="${id}_2" min="0" oninput="updateAll()"></div>${renderTeam(t2, true)}</div>`;
+}
+
+function updateAll() {
+    let activeId = document.activeElement ? document.activeElement.id : null;
+
+    for (let letter in DRUZYNY) {
+        groupResults[letter] = DRUZYNY[letter].map(t => ({ name: t.name, flag: t.flag, W:0, BZ:0, BS:0, RB:0, Pkt:0 }));
+        let teams = groupResults[letter];
+        const matchPairs = [[0,1], [2,3], [0,2], [1,3], [0,3], [1,2]];
+        matchPairs.forEach(pair => {
+            let g1 = document.getElementById(`m_${letter}_${pair[0]}_${pair[1]}_1`).value;
+            let g2 = document.getElementById(`m_${letter}_${pair[0]}_${pair[1]}_2`).value;
+            if (g1 !== "" && g2 !== "") {
+                g1 = parseInt(g1); g2 = parseInt(g2);
+                let t1 = teams[pair[0]]; let t2 = teams[pair[1]];
+                t1.BZ += g1; t1.BS += g2; t2.BZ += g2; t2.BS += g1;
+                if (g1 > g2) { t1.W++; t1.Pkt += 3; } else if (g1 < g2) { t2.W++; t2.Pkt += 3; } else { t1.Pkt += 1; t2.Pkt += 1; }
+            }
+        });
+        teams.forEach(t => t.RB = t.BZ - t.BS);
+        let sortedTeams = [...teams].sort((a, b) => { if (b.Pkt !== a.Pkt) return b.Pkt - a.Pkt; if (b.RB !== a.RB) return b.RB - a.RB; return b.BZ - a.BZ; });
+        let tbody = document.getElementById(`table-${letter}`); tbody.innerHTML = "";
+        sortedTeams.forEach((t, i) => {
+            let color = i===0 ? 'var(--grass)' : (i===1 ? 'var(--gold-light)' : (i===2 ? 'var(--text)' : 'var(--faint)'));
+            let imgHTML = t.flag ? `<img src="${t.flag}" class="flag-img">` : '';
+            tbody.innerHTML += `<tr><td style="color:${color}; font-weight:800;">${i+1}</td><td class="team-name">${imgHTML} ${t.name}</td><td>${t.BZ}</td><td>${t.BS}</td><td>${t.RB}</td><td class="col-points">${t.Pkt}</td></tr>`;
+        });
+        groupResults[letter] = sortedTeams;
+    }
+
+    let thirdPlaces = [];
+    for (let letter in groupResults) thirdPlaces.push({ ...groupResults[letter][2], group: letter });
+    thirdPlaces.sort((a, b) => { if (b.Pkt !== a.Pkt) return b.Pkt - a.Pkt; if (b.RB !== a.RB) return b.RB - a.RB; return b.BZ - a.BZ; });
+
+    let thirdBody = document.getElementById('third-place-body'); thirdBody.innerHTML = "";
+    let top8Thirds = []; 
+    thirdPlaces.forEach((t, i) => {
+        let status = i < 8 ? "AWANS" : "ODPADA"; let rowClass = i < 8 ? "awans" : "odpada";
+        if(i < 8) top8Thirds.push(t);
+        let imgHTML = t.flag ? `<img src="${t.flag}" class="flag-img">` : '';
+        thirdBody.innerHTML += `<tr class="${rowClass}"><td style="color:var(--faint)">Gr. ${t.group}</td><td class="team-name">${imgHTML} ${t.name}</td><td class="col-points">${t.Pkt}</td><td>${t.RB}</td><td>${t.W}</td><td style="font-weight:800">${status}</td></tr>`;
+    });
+
+    buildKnockout(top8Thirds);
+
+    if (activeId && document.getElementById(activeId)) {
+        document.getElementById(activeId).focus();
+    }
+}
+
+function buildKnockout(top8Thirds) {
+    let K_Teams = [
+        groupResults['A'][0], groupResults['B'][1], groupResults['C'][0], top8Thirds[0] || null,
+        groupResults['E'][0], groupResults['F'][1], groupResults['G'][0], top8Thirds[1] || null,
+        groupResults['I'][0], groupResults['J'][1], groupResults['K'][0], top8Thirds[2] || null,
+        groupResults['B'][0], groupResults['A'][1], groupResults['D'][0], top8Thirds[3] || null,
+        groupResults['F'][0], groupResults['E'][1], groupResults['H'][0], top8Thirds[4] || null,
+        groupResults['J'][0], groupResults['I'][1], groupResults['L'][0], top8Thirds[5] || null,
+        groupResults['C'][1], groupResults['D'][1], groupResults['G'][1], groupResults['H'][1],
+        top8Thirds[6] || null, top8Thirds[7] || null, groupResults['K'][1], groupResults['L'][1]
+    ];
+
+    let html = `<div class="bscroll"><div class="bracket">`;
+    let roundNames = ["1/16 Finału", "1/8 Finału", "Ćwierćfinały", "Półfinały", "Wielki Finał"];
+    let numMatches = 16;
+    let currentTeams = K_Teams;
+    roundTeamsHistory = [];
+
+    for (let round = 0; round < 5; round++) {
+        roundTeamsHistory.push(currentTeams);
+        html += `<div class="round"><div class="rhead">${roundNames[round]}</div>`;
+        let nextRoundTeams = [];
+
+        for (let i = 0; i < numMatches; i++) {
+            let t1 = currentTeams[i*2]; let t2 = currentTeams[i*2+1]; let id = `k_${round}_${i}`;
+            let g1 = document.getElementById(`${id}_1`) ? document.getElementById(`${id}_1`).value : "";
+            let g2 = document.getElementById(`${id}_2`) ? document.getElementById(`${id}_2`).value : "";
+            
+            let pen = "";
+            let r1 = document.getElementById(`pen_${id}_1`);
+            let r2 = document.getElementById(`pen_${id}_2`);
+            if (r1 && r1.checked) pen = "1";
+            if (r2 && r2.checked) pen = "2";
+
+            let winner = {name: "Zwycięzca", flag: ""}; let matchClass = "bracket-match";
+            let isDraw = false;
+
+            if (g1 !== "" && g2 !== "") {
+                let s1 = parseInt(g1); let s2 = parseInt(g2);
+                if (s1 > s2) { winner = t1; matchClass += " win"; }
+                else if (s2 > s1) { winner = t2; matchClass += " win"; }
+                else {
+                    isDraw = true;
+                    if (pen === "1") { winner = t1; matchClass += " win"; }
+                    else if (pen === "2") { winner = t2; matchClass += " win"; }
+                    else { winner = {name: "Wybierz w karnych ->", flag: ""}; }
+                }
+            }
+            nextRoundTeams.push(winner);
+
+            let p1 = isDraw ? `<input type="radio" class="pen-radio" name="pen_${id}" id="pen_${id}_1" value="1" onchange="updateAll()" ${pen==="1"?"checked":""} title="Wygra w karnych">` : ``;
+            let p2 = isDraw ? `<input type="radio" class="pen-radio" name="pen_${id}" id="pen_${id}_2" value="2" onchange="updateAll()" ${pen==="2"?"checked":""} title="Wygra w karnych">` : ``;
+
+            html += `<div class="${matchClass}"><div class="match" style="background:transparent; border:none; padding:0; box-shadow:none;">${renderTeam(t1)}<div style="display:flex; gap:4px; align-items:center;">${p1}<input type="number" id="${id}_1" value="${g1}" min="0" oninput="updateAll()"> : <input type="number" id="${id}_2" value="${g2}" min="0" oninput="updateAll()">${p2}</div>${renderTeam(t2, true)}</div></div>`;
+        }
+        html += `</div>`; currentTeams = nextRoundTeams; numMatches = numMatches / 2;
+    }
+    html += `</div></div>`;
+    document.getElementById('knockout-container').innerHTML = html;
+
+    let champion = currentTeams[0] && currentTeams[0].name !== "Zwycięzca" && !currentTeams[0].name.includes("Wybierz") ? currentTeams[0] : null;
+    let champBox = document.getElementById('champBox');
+    
+    if (champion) {
+        champBox.classList.add('show');
+        let champImg = champion.flag ? `<img src="${champion.flag}" style="height:1.2em; border-radius:4px; box-shadow:0 2px 5px rgba(0,0,0,0.5);">` : '';
+        document.getElementById('champName').innerHTML = `${champImg} ${champion.name}`;
+    } else { champBox.classList.remove('show'); document.getElementById('champName').innerHTML = ""; }
+}
+
+function sendToExcel() {
+    let playerName = document.getElementById('player-name').value;
+    if (playerName.trim() === "") {
+        alert("Wpisz swój nick, żebyśmy wiedzieli kogo zapisać w tabeli typerów!");
+        return;
+    }
+
+    let cName = document.getElementById('champName').innerText.trim() || 'Nie wybrano';
+    let f1 = "?"; let f2 = "?";
+    if (roundTeamsHistory[4] && roundTeamsHistory[4][0] && roundTeamsHistory[4][1]) {
+        f1 = roundTeamsHistory[4][0].name !== "Zwycięzca" ? roundTeamsHistory[4][0].name : "?";
+        f2 = roundTeamsHistory[4][1].name !== "Zwycięzca" ? roundTeamsHistory[4][1].name : "?";
+    }
+    
+    let fullResults = "🏆 MISTRZ ŚWIATA: " + cName + "\\n";
+    fullResults += "🔥 SKŁAD FINAŁU: " + f1 + " vs " + f2 + "\\n\\n";
+    fullResults += "📊 ZWYCIĘZCY GRUP (1. Miejsca):\\n";
+    for (let l in groupResults) {
+        let t = groupResults[l][0];
+        fullResults += "- Grupa " + l + ": " + t.name + " (" + t.Pkt + " pkt)\\n";
+    }
+
+    // TWORZYMY NIEWIDZIALNY FORMULARZ W TLE
+    let form = document.createElement("form");
+    form.action = "https://docs.google.com/forms/d/e/1FAIpQLSfjjn8k4117Emnj2LqfrzH3lal4oo2vGLqOCctunxSJs9_ywg/formResponse";
+    form.method = "POST";
+    form.target = "hidden_iframe"; // WYSYŁAMY DO NASZEJ NIEWIDZIALNEJ RAMKI
+
+    // POLE: IMIĘ
+    let inputName = document.createElement("input");
+    inputName.type = "hidden";
+    inputName.name = "entry.431356120";
+    inputName.value = playerName;
+    form.appendChild(inputName);
+
+    // POLE: PEŁNE WYNIKI
+    let inputResults = document.createElement("input");
+    inputResults.type = "hidden";
+    inputResults.name = "entry.867519413";
+    inputResults.value = fullResults;
+    form.appendChild(inputResults);
+
+    document.body.appendChild(form);
+    
+    let btn = document.getElementById('send-btn');
+    btn.innerText = "⏳ WYSYŁANIE...";
+    btn.disabled = true;
+
+    // AKTYWUJEMY FLAGĘ I WYSYŁAMY!
+    submitted = true;
+    form.submit();
+}
+
+function submitSuccess() {
+    let btn = document.getElementById('send-btn');
+    btn.innerText = "✅ WYNIKI ZAPISANE W BAZIE!";
+    btn.style.background = "var(--grass)";
+    btn.style.color = "#fff";
+    alert("GOOOL! Twoje wyniki dotarły bezpiecznie do Excela organizatora.");
+}
+
+window.onload = initApp;
+</script>
+</body>
+</html>
